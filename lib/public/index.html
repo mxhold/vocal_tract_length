@@ -1,86 +1,8 @@
 <html>
 <head>
   <title>Calculate Your Vocal Tract Length</title>
-  <script>
-    var audio_context;
-    var recorder;
-
-    window.onload = function init() {
-      try {
-        // webkit shim
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-        window.URL = window.URL || window.webkitURL;
-
-        audio_context = new AudioContext;
-        navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-          console.log('No live audio input: ' + e);
-        });
-      } catch (e) {
-        alert('No web audio support in this browser!');
-      }
-
-    };
-
-    function startUserMedia(stream) {
-      var input = audio_context.createMediaStreamSource(stream);
-      recorder = new Recorder(input);
-      document.querySelector("[data-id=allowHint]").style.display = 'none';
-      startRecordingButton = document.querySelector("[data-action=startRecording]");
-      startRecordingButton.disabled = false;
-      startRecordingButton.addEventListener("click", startRecording, false);
-    }
-
-    function startRecording() {
-      this.innerHTML = "Recording... "
-      this.disabled = true;
-      recorder && recorder.record();
-
-      setTimeout(stopRecording, 2000, this);
-    }
-
-    function stopRecording(button) {
-      recorder && recorder.stop();
-
-      document.querySelector("[data-action=startRecording]").innerHTML =
-        "Calculating...";
-      recorder.exportWAV(sendWAV);
-    }
-
-    function calculateVocalTractLength(formant1) {
-      return 34400 / (4.0 * formant1);
-    }
-
-    function roundTo(number, places) {
-      return Math.round(number * Math.pow(10, places))/Math.pow(10, places);
-    }
-
-    function setFormant1Result(formant1Text) {
-      formant1 = parseFloat(formant1Text);
-      document.querySelector("[data-action=startRecording]").disabled = false;
-      document.querySelector("[data-action=startRecording]").innerHTML =
-        "Record";
-      document.querySelector("[data-id=results]").style.display = 'initial';
-      document.querySelector("[data-id=formant1]").innerHTML = roundTo(formant1, 0);
-      document.querySelector("[data-id=vocalTractLength]").innerHTML = roundTo(calculateVocalTractLength(formant1), 1);
-    }
-
-    function sendWAV(blob) {
-      var formData = new FormData();
-      formData.append('data', blob);
-      xhr = new XMLHttpRequest();
-      xhr.open("POST", "extract_formant1", true);
-      xhr.onload = function() {
-        setFormant1Result(xhr.responseText);
-      }
-      xhr.send(formData);
-
-      recorder.clear();
-    }
-
-
-  </script>
-  <script src="recorder.js"></script>
+  <script src="assets/recorder.js"></script>
+  <script src="assets/vocal_tract_length.js"></script>
 </head>
 <body>
   <nav>
@@ -129,7 +51,7 @@
       length of the tube (<em>L</em>, which is what we are trying to figure
       out):
     </p>
-    <img src="frequency.png" alt="f = nv/2L" height="50">
+    <img src="assets/frequency.png" alt="f = nv/2L" height="50" width="88">
     <p>
       The <em>n</em> here refers to which resonance frequency we're talking
       about. Vowels will usually have four or more distinguishable resonance
@@ -139,7 +61,7 @@
       temperature (20&deg;C). And since we know the frequency but want to
       determine the length, we can solve for L to get this equation:
     </p>
-    <img src="length.png" alt="L = 34400/4f" height="50">
+    <img src="assets/length.png" alt="L = 34400/4f" height="50" width="116">
     <h2>How are you measuring F<sub>1</sub>?</h2>
     <p>
       When you hit record, we are using a Javascript library that wraps the
