@@ -3,9 +3,6 @@
 This small Sinatra application provides the frontend for users to record their
 voice in order to calculate the length of their vocal tract.
 
-See it in action at:
-[http://maxwellholder.com/vocal_tract_length/index.html](http://maxwellholder.com/vocal_tract_length/index.html)
-
 # Backend
 
 To see the [Praat](http://praat.org) script and the Sinatra extension that provides the
